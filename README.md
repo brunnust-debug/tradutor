@@ -1,2 +1,3 @@
 # tradutor
 Translate everything 
+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
