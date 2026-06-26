@@ -78,7 +78,7 @@ async function captureAndTranslate() {
   const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
   loadingBadge.style.display = 'flex';
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://cors-anywhere.herokuapp.com/https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
