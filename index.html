@@ -95,11 +95,11 @@ async function captureAndTranslate() {
         ]}]
       })
     });
-    const data = await res.json();
+    errorBox.textContent = JSON.stringify(data); errorBox.style.display='block';
     const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
     renderTranslations(Array.isArray(parsed) ? parsed : []);
-  } catch(e) { errorBox.textContent = e.message; errorBox.style.display='block'; renderTranslations([]); }
+  } catch(e) { errorBox.textContent = JSON.stringify(e.message) + ' | ' + JSON.stringify(data); errorBox.style.display='block'; renderTranslations([]); }
   finally { loadingBadge.style.display = 'none'; }
 }
 
