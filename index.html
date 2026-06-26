@@ -6,130 +6,40 @@
 <title>Tradutor AR</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #0a0a0f;
-    color: #fff;
-    font-family: 'Segoe UI', sans-serif;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  #header {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    background: rgba(255,255,255,0.05);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    gap: 8px;
-  }
+  body { background: #0a0a0f; color: #fff; font-family: 'Segoe UI', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  #header { display: flex; align-items: center; padding: 12px 16px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.08); gap: 8px; }
   #header span { flex: 1; font-weight: 700; font-size: 16px; }
-  #flipBtn {
-    background: none; border: none; font-size: 22px; cursor: pointer;
-  }
-  #viewport {
-    flex: 1;
-    position: relative;
-    background: #000;
-    overflow: hidden;
-  }
-  #video {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-  }
+  #flipBtn { background: none; border: none; font-size: 22px; cursor: pointer; }
+  #viewport { flex: 1; position: relative; background: #000; overflow: hidden; }
+  #video { width: 100%; height: 100%; object-fit: cover; display: block; }
   #canvas { display: none; }
-  #placeholder {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 12px; padding: 32px;
-    background: rgba(0,0,0,0.7);
-  }
+  #placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 32px; background: rgba(0,0,0,0.7); }
   #placeholder div { font-size: 52px; }
   #placeholder p { text-align: center; color: #a0aec0; font-size: 14px; line-height: 1.6; max-width: 260px; }
-  #scanLine {
-    display: none;
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, #48bb78, transparent);
-    animation: scan 2.5s linear infinite;
-    pointer-events: none;
-  }
-  .bubble {
-    position: absolute;
-    left: 50%; transform: translateX(-50%);
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-    justify-content: center;
-    background: rgba(0,0,0,0.85);
-    border: 1px solid rgba(72,187,120,0.6);
-    border-radius: 10px;
-    padding: 6px 14px;
-    max-width: 92%;
-    z-index: 10;
-    animation: fadeIn 0.3s ease;
-  }
+  #scanLine { display: none; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #48bb78, transparent); animation: scan 2.5s linear infinite; pointer-events: none; }
+  .bubble { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.85); border: 1px solid rgba(72,187,120,0.6); border-radius: 10px; padding: 6px 14px; max-width: 92%; z-index: 10; animation: fadeIn 0.3s ease; }
   .bubble .orig { color: #a0aec0; font-size: 12px; text-decoration: line-through; }
   .bubble .arr { color: #48bb78; font-weight: 700; }
   .bubble .trad { color: #f0fff4; font-size: 15px; font-weight: 700; }
-  #loadingBadge {
-    display: none;
-    position: absolute; bottom: 14px; right: 14px;
-    background: rgba(0,0,0,0.8);
-    border: 1px solid rgba(72,187,120,0.4);
-    border-radius: 20px; padding: 6px 12px;
-    font-size: 12px; color: #68d391;
-    align-items: center; gap: 6px;
-  }
-  .spinner {
-    width: 10px; height: 10px;
-    border: 2px solid rgba(72,187,120,0.3);
-    border-top: 2px solid #48bb78;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    display: inline-block;
-  }
-  #errorBox {
-    display: none;
-    background: #742a2a; color: #fed7d7;
-    padding: 10px 16px; font-size: 13px; text-align: center;
-  }
-  #listBox {
-    max-height: 120px; overflow-y: auto;
-    background: rgba(255,255,255,0.03);
-    border-top: 1px solid rgba(255,255,255,0.07);
-  }
-  .listItem {
-    display: flex; flex-direction: column;
-    padding: 8px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
+  #loadingBadge { display: none; position: absolute; bottom: 14px; right: 14px; background: rgba(0,0,0,0.8); border: 1px solid rgba(72,187,120,0.4); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: #68d391; align-items: center; gap: 6px; }
+  .spinner { width: 10px; height: 10px; border: 2px solid rgba(72,187,120,0.3); border-top: 2px solid #48bb78; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+  #errorBox { display: none; background: #742a2a; color: #fed7d7; padding: 10px 16px; font-size: 13px; text-align: center; }
+  #listBox { max-height: 120px; overflow-y: auto; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.07); }
+  .listItem { display: flex; flex-direction: column; padding: 8px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .listItem .en { font-size: 11px; color: #718096; text-decoration: line-through; }
   .listItem .pt { font-size: 14px; color: #68d391; font-weight: 600; }
-  #footer {
-    padding: 12px 16px;
-    background: rgba(255,255,255,0.03);
-    border-top: 1px solid rgba(255,255,255,0.07);
-  }
-  #mainBtn {
-    width: 100%; padding: 14px;
-    border: none; border-radius: 12px;
-    color: #fff; font-weight: 700; font-size: 16px;
-    cursor: pointer; background: #38a169;
-  }
+  #footer { padding: 12px 16px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.07); }
+  #mainBtn { width: 100%; padding: 14px; border: none; border-radius: 12px; color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; background: #38a169; }
   @keyframes scan { 0% { top: 0 } 100% { top: 100% } }
   @keyframes spin { to { transform: rotate(360deg) } }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(-6px) }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0) }
-  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(-6px) } to { opacity: 1; transform: translateX(-50%) translateY(0) } }
 </style>
 </head>
 <body>
-
 <div id="header">
   <span>🔍 Tradutor AR</span>
-  <button id="flipBtn" title="Trocar câmera">🔄</button>
+  <button id="flipBtn">🔄</button>
 </div>
-
 <div id="viewport">
   <video id="video" playsinline muted autoplay></video>
   <canvas id="canvas"></canvas>
@@ -140,18 +50,14 @@
     <p>Aponte a câmera para textos em inglês e veja a tradução em tempo real</p>
   </div>
 </div>
-
 <div id="errorBox"></div>
 <div id="listBox"></div>
-
 <div id="footer">
   <button id="mainBtn">▶ Ligar câmera</button>
 </div>
-
 <script>
-const API_KEY = "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";
+const API_KEY ="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";
 const INTERVAL = 2500;
-
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const mainBtn = document.getElementById('mainBtn');
@@ -162,20 +68,14 @@ const loadingBadge = document.getElementById('loadingBadge');
 const errorBox = document.getElementById('errorBox');
 const listBox = document.getElementById('listBox');
 const viewport = document.getElementById('viewport');
-
-let active = false;
-let stream = null;
-let interval = null;
-let facingMode = 'environment';
+let active = false, stream = null, interval = null, facingMode = 'environment';
 
 async function captureAndTranslate() {
   if (!video || video.readyState < 2) return;
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0);
+  canvas.getContext('2d').drawImage(video, 0, 0);
   const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1];
-
   loadingBadge.style.display = 'flex';
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -189,43 +89,29 @@ async function captureAndTranslate() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
-            { type: 'text', text: 'Analise esta imagem e encontre TODOS os textos em inglês visíveis.\nPara cada texto encontrado, retorne um JSON array com objetos no formato:\n{"original": "texto em inglês", "traducao": "tradução em português"}\n\nSe não houver texto em inglês, retorne um array vazio: []\n\nRetorne APENAS o JSON, sem explicações ou markdown.' }
-          ]
-        }]
+        messages: [{ role: 'user', content: [
+          { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
+          { type: 'text', text: 'Encontre todos os textos em inglês nesta imagem. Retorne APENAS um JSON array: [{"original":"texto","traducao":"tradução"}]. Se não houver texto em inglês, retorne [].' }
+        ]}]
       })
     });
-
     const data = await res.json();
-    const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-    const clean = raw.replace(/```json|```/g, '').trim();
-
-    try {
-      const parsed = JSON.parse(clean);
-      renderTranslations(Array.isArray(parsed) ? parsed : []);
-    } catch { renderTranslations([]); }
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loadingBadge.style.display = 'none';
-  }
+    const raw = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    renderTranslations(Array.isArray(parsed) ? parsed : []);
+  } catch(e) { renderTranslations([]); }
+  finally { loadingBadge.style.display = 'none'; }
 }
 
 function renderTranslations(list) {
-  // Remove bubbles antigas
-  document.querySelectorAll('.bubble').forEach(b => b.remove());
+  document.querySelectorAll('.bubble').forEach(b=>b.remove());
   listBox.innerHTML = '';
-
-  list.forEach((t, i) => {
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.style.top = (20 + i * 20) + '%';
-    bubble.innerHTML = `<span class="orig">${t.original}</span><span class="arr">→</span><span class="trad">${t.traducao}</span>`;
-    viewport.appendChild(bubble);
-
+  list.forEach((t,i) => {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    b.style.top = (15 + i*20)+'%';
+    b.innerHTML = `<span class="orig">${t.original}</span><span class="arr">→</span><span class="trad">${t.traducao}</span>`;
+    viewport.appendChild(b);
     const item = document.createElement('div');
     item.className = 'listItem';
     item.innerHTML = `<span class="en">${t.original}</span><span class="pt">${t.traducao}</span>`;
@@ -236,9 +122,7 @@ function renderTranslations(list) {
 async function startCamera() {
   errorBox.style.display = 'none';
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }
-    });
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode, width:{ideal:1280}, height:{ideal:720} } });
     video.srcObject = stream;
     await video.play();
     active = true;
@@ -247,7 +131,7 @@ async function startCamera() {
     mainBtn.textContent = '⏹ Parar câmera';
     mainBtn.style.background = '#e53e3e';
     interval = setInterval(captureAndTranslate, INTERVAL);
-  } catch (e) {
+  } catch(e) {
     errorBox.textContent = 'Não foi possível acessar a câmera. Verifique as permissões.';
     errorBox.style.display = 'block';
   }
@@ -255,22 +139,19 @@ async function startCamera() {
 
 function stopCamera() {
   clearInterval(interval);
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
   video.srcObject = null;
   active = false;
   placeholder.style.display = 'flex';
   scanLine.style.display = 'none';
   mainBtn.textContent = '▶ Ligar câmera';
   mainBtn.style.background = '#38a169';
-  document.querySelectorAll('.bubble').forEach(b => b.remove());
+  document.querySelectorAll('.bubble').forEach(b=>b.remove());
   listBox.innerHTML = '';
 }
 
-mainBtn.addEventListener('click', () => active ? stopCamera() : startCamera());
-flipBtn.addEventListener('click', () => {
-  facingMode = facingMode === 'environment' ? 'user' : 'environment';
-  if (active) { stopCamera(); setTimeout(startCamera, 300); }
-});
+mainBtn.addEventListener('click', ()=> active ? stopCamera() : startCamera());
+flipBtn.addEventListener('click', ()=> { facingMode = facingMode==='environment'?'user':'environment'; if(active){stopCamera();setTimeout(startCamera,300);} });
 </script>
 </body>
 </html>
